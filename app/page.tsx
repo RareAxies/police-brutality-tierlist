@@ -1,6 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import { generateThumbnail } from '../lib/generateThumbnails';
+import React, { useState } from 'react';
 
 interface Tweet {
   id: string;
@@ -11,10 +10,9 @@ interface Tweet {
   reposts: number;
   avatarUrl: string;
   mediaUrl?: string;
-  thumbnailUrl?: string;
 }
 
-const initialTweetsBase = [
+const initialTweets: Tweet[] = [
   {
     id: "2078216763024535716",
     author: "The media SOI 🇬🇧",
@@ -89,24 +87,10 @@ const tierColors: Record<string, string> = {
 };
 
 export default function TierListApp() {
-  const [availableTweets, setAvailableTweets] = useState<Tweet[]>([]);
-
-  useEffect(() => {
-    const loadWithThumbnails = async () => {
-      const tweets = await Promise.all(
-        initialTweetsBase.map(async (tweet) => {
-          if (tweet.mediaUrl) {
-            const thumbnailUrl = await generateThumbnail(tweet.mediaUrl, tweet.id);
-            return { ...tweet, thumbnailUrl: thumbnailUrl || undefined };
-          }
-          return tweet;
-        })
-      );
-      setAvailableTweets(tweets);
-    };
-
-    loadWithThumbnails();
-  }, []);
+  const [availableTweets, setAvailableTweets] = useState<Tweet[]>(initialTweets);
+  const [tierLists, setTierLists] = useState<Record<string, Tweet[]>>({
+    S: [], A: [], B: [], C: [], D: [], E: []
+  });
 
   const onDragStart = (e: React.DragEvent, tweet: Tweet, source: 'available' | 'tier', tierKey?: string) => {
     e.dataTransfer.setData('tweetId', tweet.id);
@@ -154,7 +138,7 @@ export default function TierListApp() {
   };
 
   const resetAll = () => {
-    setAvailableTweets([...initialTweetsBase]);
+    setAvailableTweets([...initialTweets]);
     setTierLists({ S: [], A: [], B: [], C: [], D: [], E: [] });
   };
 
@@ -199,16 +183,21 @@ export default function TierListApp() {
                   {tweet.mediaUrl && (
                     <div className="w-80 flex-shrink-0">
                       <div className="relative rounded-2xl overflow-hidden border border-[#2f3336] aspect-video bg-black group">
-                        {tweet.thumbnailUrl ? (
-                          <img src={tweet.thumbnailUrl} alt="Thumbnail" className="w-full h-full object-cover" />
-                        ) : (
-                          <video src={tweet.mediaUrl} className="w-full h-full object-cover opacity-30" muted />
-                        )}
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/50 group-hover:bg-black/30">
-                          <div className="text-6xl text-white/90">▶</div>
+                        <video 
+                          src={tweet.mediaUrl} 
+                          className="w-full h-full object-cover opacity-40"
+                          muted
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/50 group-hover:bg-black/30 transition-all">
+                          <div className="text-6xl text-white/90 drop-shadow-lg">▶</div>
                         </div>
+                        <div className="absolute bottom-3 left-3 text-xs bg-black/80 px-3 py-1 rounded font-mono">VIDEO</div>
                       </div>
-                      <a href={`https://x.com/i/status/${tweet.id}`} target="_blank" className="block text-center text-blue-400 hover:text-blue-300 text-sm mt-3">
+                      <a 
+                        href={`https://x.com/i/status/${tweet.id}`} 
+                        target="_blank" 
+                        className="block text-center text-blue-400 hover:text-blue-300 text-sm mt-3 font-medium"
+                      >
                         Watch full video on X →
                       </a>
                     </div>
@@ -232,7 +221,12 @@ export default function TierListApp() {
                   <div className="space-y-4">
                     {tierLists[tier].map((tweet) => (
                       <div key={tweet.id} className="bg-[#1f2429] p-5 rounded-2xl border border-[#2f3336] relative group flex gap-4">
-                        <button onClick={() => removeFromTier(tier, tweet.id)} className="absolute top-3 right-3 text-xl text-gray-400 hover:text-red-400 opacity-0 group-hover:opacity-100">×</button>
+                        <button
+                          onClick={() => removeFromTier(tier, tweet.id)}
+                          className="absolute top-3 right-3 text-xl text-gray-400 hover:text-red-400 opacity-0 group-hover:opacity-100"
+                        >
+                          ×
+                        </button>
                         <img src={tweet.avatarUrl} alt="" className="w-10 h-10 rounded-full flex-shrink-0" />
                         <div className="flex-1">
                           <div className="font-semibold text-sm">{tweet.author}</div>
