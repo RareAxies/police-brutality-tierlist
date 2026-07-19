@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { generateThumbnail } from './lib/generateThumbnails';
+import { generateThumbnail } from '../lib/generateThumbnails';
 
 interface Tweet {
   id: string;
