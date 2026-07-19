@@ -9,6 +9,7 @@ interface Tweet {
   likes: number;
   reposts: number;
   avatarUrl: string;
+  mediaUrl?: string;
 }
 
 const initialTweets: Tweet[] = [
@@ -19,7 +20,8 @@ const initialTweets: Tweet[] = [
     content: "Up Scotland police pull a taser out on concerned parents after migrants kept a 14 year old girl against her will locked in their flat for 3 days",
     likes: 2093,
     reposts: 801,
-    avatarUrl: "https://pbs.twimg.com/profile_images/2074137677620768768/yeoj3BGI.jpg"
+    avatarUrl: "https://pbs.twimg.com/profile_images/2074137677620768768/yeoj3BGI.jpg",
+    mediaUrl: "https://video.twimg.com/amplify_video/2078216678232477696/vid/avc1/296x640/mVMm9L0liR8aPWWz.mp4"
   },
   {
     id: "2077145657932968156",
@@ -28,7 +30,8 @@ const initialTweets: Tweet[] = [
     content: "The police officer walks straight past the armed foreigners and attacks the native holding some sticks.",
     likes: 717,
     reposts: 72,
-    avatarUrl: "https://pbs.twimg.com/profile_images/2008318949448892417/v7L-39OP.jpg"
+    avatarUrl: "https://pbs.twimg.com/profile_images/2008318949448892417/v7L-39OP.jpg",
+    mediaUrl: "https://video.twimg.com/ext_tw_video/2076959374325518337/pu/vid/avc1/712x1276/94rcQTdM8Mg78J5v.mp4"
   },
   {
     id: "2075556663164109257",
@@ -37,7 +40,8 @@ const initialTweets: Tweet[] = [
     content: "West Yorkshire police officer punches 16-year-old girl with special needs in the face. They wouldn't treat an illegal migrant like this.",
     likes: 5112,
     reposts: 2307,
-    avatarUrl: "https://pbs.twimg.com/profile_images/1704571042524491776/ieHPB868.jpg"
+    avatarUrl: "https://pbs.twimg.com/profile_images/1704571042524491776/ieHPB868.jpg",
+    mediaUrl: "https://video.twimg.com/amplify_video/2075556459207700480/vid/avc1/720x1280/dKB7mTRjRY5dROej.mp4"
   },
   {
     id: "2074418780726292717",
@@ -46,7 +50,8 @@ const initialTweets: Tweet[] = [
     content: "Absolute state of British police.\nInvader casually walks up to a police car, pops the door like it’s his personal Uber, springs his fellow criminal invader, and they both bolt while the coppers just stand there.",
     likes: 76,
     reposts: 39,
-    avatarUrl: "https://pbs.twimg.com/profile_images/2067713504182697984/xG9JHwPk.jpg"
+    avatarUrl: "https://pbs.twimg.com/profile_images/2067713504182697984/xG9JHwPk.jpg",
+    mediaUrl: "https://video.twimg.com/amplify_video/2074418750703509504/vid/avc1/540x960/h4SSWfPX6Hfta3Z8.mp4"
   },
   {
     id: "2074041176559108555",
@@ -55,7 +60,8 @@ const initialTweets: Tweet[] = [
     content: "British Constables are taught to hate the people.\n\nDon't trust them.\n\nDon't consent to them.",
     likes: 3175,
     reposts: 737,
-    avatarUrl: "https://pbs.twimg.com/profile_images/1133287235531485190/BdNIkUda.jpg"
+    avatarUrl: "https://pbs.twimg.com/profile_images/1133287235531485190/BdNIkUda.jpg",
+    mediaUrl: "https://video.twimg.com/amplify_video/2074040943863300097/vid/avc1/720x894/iW-3Nfwnd0-31R3M.mp4"
   },
   {
     id: "2075539170504667425",
@@ -64,7 +70,8 @@ const initialTweets: Tweet[] = [
     content: "Sadiq Khan responds to images of Moroccan football fans rioting in London:\n\nI've seen the videos from Edgware Road & I'm proud of our brave Met officers for their tactical retreat, showing true community sensitivity! \n\nCredit to those passionate Moroccan fans for bringing such lively energy to our streets.\n\nLondon is safer with me in charge. Alhamdulillah!",
     likes: 49,
     reposts: 15,
-    avatarUrl: "https://pbs.twimg.com/profile_images/2015038970405572608/lbcRtHrS.jpg"
+    avatarUrl: "https://pbs.twimg.com/profile_images/2015038970405572608/lbcRtHrS.jpg",
+    mediaUrl: "https://video.twimg.com/amplify_video/2075470209431814144/vid/avc1/1920x1080/K8qF3qoHikFQXusn.mp4"
   },
 ];
 
@@ -123,7 +130,6 @@ export default function TierListApp() {
   const removeFromTier = (tier: string, tweetId: string) => {
     const tweet = tierLists[tier].find(t => t.id === tweetId);
     if (!tweet) return;
-
     setTierLists(prev => ({
       ...prev,
       [tier]: prev[tier].filter(t => t.id !== tweetId)
@@ -150,6 +156,7 @@ export default function TierListApp() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          {/* Available Posts - Visual Heavy */}
           <div className="lg:col-span-7">
             <h2 className="text-3xl font-semibold mb-6">Available Posts ({availableTweets.length})</h2>
             <div className="space-y-6">
@@ -158,34 +165,50 @@ export default function TierListApp() {
                   key={tweet.id}
                   draggable
                   onDragStart={(e) => onDragStart(e, tweet, 'available')}
-                  className="bg-[#16181c] border border-[#2f3336] p-6 rounded-3xl cursor-grab hover:border-blue-500/50 transition-all"
+                  className="bg-[#16181c] border border-[#2f3336] p-6 rounded-3xl cursor-grab hover:border-blue-500/50 transition-all flex gap-6"
                 >
-                  <div className="flex gap-4">
-                    <img src={tweet.avatarUrl} alt={tweet.author} className="w-11 h-11 rounded-full mt-1 flex-shrink-0" />
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold">{tweet.author}</span>
-                        <span className="text-gray-500">{tweet.handle}</span>
+                  {/* Left: Text */}
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-4">
+                      <img src={tweet.avatarUrl} alt={tweet.author} className="w-11 h-11 rounded-full" />
+                      <div>
+                        <div className="font-bold">{tweet.author}</div>
+                        <div className="text-gray-500 text-sm">{tweet.handle}</div>
                       </div>
-                      <p className="mt-2 text-[15px] leading-relaxed whitespace-pre-line">{tweet.content}</p>
-                      <div className="mt-4 flex items-center gap-6 text-sm text-gray-400">
-                        <span>❤️ {tweet.likes}</span>
-                        <span>🔁 {tweet.reposts}</span>
-                      </div>
-                      <a
-                        href={`https://x.com/i/status/${tweet.id}`}
-                        target="_blank"
-                        className="mt-4 inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 text-sm font-medium"
-                      >
-                        View full post on X →
-                      </a>
                     </div>
+                    <p className="text-[15px] leading-relaxed whitespace-pre-line">{tweet.content}</p>
+                    <div className="mt-4 flex gap-6 text-sm text-gray-400">
+                      ❤️ {tweet.likes} &nbsp; 🔁 {tweet.reposts}
+                    </div>
+                  </div>
+
+                  {/* Right: Big Media Preview */}
+                  <div className="w-80 flex-shrink-0 flex flex-col">
+                    {tweet.mediaUrl ? (
+                      <div className="relative rounded-2xl overflow-hidden border border-[#2f3336] bg-black aspect-video flex items-center justify-center group">
+                        <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/70"></div>
+                        <div className="text-6xl text-white/80 group-hover:scale-110 transition-transform">▶</div>
+                        <div className="absolute bottom-3 left-3 text-xs bg-black/70 px-2 py-1 rounded">VIDEO</div>
+                      </div>
+                    ) : (
+                      <div className="aspect-video bg-[#0f1114] rounded-2xl flex items-center justify-center border border-[#2f3336]">
+                        <span className="text-gray-500">No media</span>
+                      </div>
+                    )}
+                    <a
+                      href={`https://x.com/i/status/${tweet.id}`}
+                      target="_blank"
+                      className="mt-3 block text-center text-blue-400 hover:text-blue-300 text-sm font-medium"
+                    >
+                      Watch full video on X →
+                    </a>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
+          {/* Tier List */}
           <div className="lg:col-span-5">
             <h2 className="text-3xl font-semibold mb-6">Your Tier List</h2>
             <div className="space-y-6">
@@ -199,28 +222,21 @@ export default function TierListApp() {
                   <div className="text-6xl font-black mb-6 opacity-90">{tier}</div>
                   <div className="space-y-4">
                     {tierLists[tier].map((tweet) => (
-                      <div key={tweet.id} className="bg-[#1f2429] p-5 rounded-2xl border border-[#2f3336] relative group">
+                      <div key={tweet.id} className="bg-[#1f2429] p-5 rounded-2xl border border-[#2f3336] relative group flex gap-4">
                         <button
                           onClick={() => removeFromTier(tier, tweet.id)}
                           className="absolute top-3 right-3 text-xl text-gray-400 hover:text-red-400 opacity-0 group-hover:opacity-100"
                         >
                           ×
                         </button>
-                        <div className="flex items-center gap-3 mb-3">
-                          <img src={tweet.avatarUrl} alt="" className="w-8 h-8 rounded-full flex-shrink-0" />
-                          <div>
-                            <div className="font-semibold text-sm">{tweet.author}</div>
-                            <div className="text-xs text-gray-500">{tweet.handle}</div>
-                          </div>
+                        <img src={tweet.avatarUrl} alt="" className="w-10 h-10 rounded-full flex-shrink-0 mt-0.5" />
+                        <div className="flex-1">
+                          <div className="font-semibold text-sm">{tweet.author}</div>
+                          <p className="text-[15px] mt-1 line-clamp-3">{tweet.content}</p>
+                          <a href={`https://x.com/i/status/${tweet.id}`} target="_blank" className="text-blue-400 hover:text-blue-300 text-xs mt-2 inline-block">
+                            View original →
+                          </a>
                         </div>
-                        <p className="text-[15px] whitespace-pre-line">{tweet.content}</p>
-                        <a
-                          href={`https://x.com/i/status/${tweet.id}`}
-                          target="_blank"
-                          className="text-blue-400 hover:text-blue-300 text-xs mt-3 inline-block"
-                        >
-                          View original on X →
-                        </a>
                       </div>
                     ))}
                   </div>
