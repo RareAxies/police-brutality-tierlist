@@ -9,7 +9,6 @@ interface Tweet {
   likes: number;
   reposts: number;
   avatarUrl: string;
-  mediaUrl?: string;
 }
 
 const initialTweets: Tweet[] = [
@@ -20,8 +19,7 @@ const initialTweets: Tweet[] = [
     content: "Up Scotland police pull a taser out on concerned parents after migrants kept a 14 year old girl against her will locked in their flat for 3 days",
     likes: 1414,
     reposts: 518,
-    avatarUrl: "https://pbs.twimg.com/profile_images/2074137677620768768/yeoj3BGI.jpg",
-    mediaUrl: "https://video.twimg.com/amplify_video/2078216678232477696/vid/avc1/296x640/mVMm9L0liR8aPWWz.mp4"
+    avatarUrl: "https://pbs.twimg.com/profile_images/2074137677620768768/yeoj3BGI.jpg"
   },
   {
     id: "2077145657932968156",
@@ -30,8 +28,7 @@ const initialTweets: Tweet[] = [
     content: "The police officer walks straight past the armed foreigners and attacks the native holding some sticks.",
     likes: 716,
     reposts: 72,
-    avatarUrl: "https://pbs.twimg.com/profile_images/2008318949448892417/v7L-39OP.jpg",
-    mediaUrl: "https://video.twimg.com/ext_tw_video/2076959374325518337/pu/vid/avc1/712x1276/94rcQTdM8Mg78J5v.mp4"
+    avatarUrl: "https://pbs.twimg.com/profile_images/2008318949448892417/v7L-39OP.jpg"
   },
   {
     id: "2075556663164109257",
@@ -40,8 +37,7 @@ const initialTweets: Tweet[] = [
     content: "West Yorkshire police officer punches 16-year-old girl with special needs in the face. They wouldn't treat an illegal migrant like this.",
     likes: 5117,
     reposts: 2311,
-    avatarUrl: "https://pbs.twimg.com/profile_images/1704571042524491776/ieHPB868.jpg",
-    mediaUrl: "https://video.twimg.com/amplify_video/2075556459207700480/vid/avc1/720x1280/dKB7mTRjRY5dROej.mp4"
+    avatarUrl: "https://pbs.twimg.com/profile_images/1704571042524491776/ieHPB868.jpg"
   },
   {
     id: "2074418780726292717",
@@ -154,6 +150,7 @@ export default function TierListApp() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          {/* Available Posts */}
           <div className="lg:col-span-7">
             <h2 className="text-3xl font-semibold mb-6">Available Posts ({availableTweets.length})</h2>
             <div className="space-y-6">
@@ -164,43 +161,35 @@ export default function TierListApp() {
                   onDragStart={(e) => onDragStart(e, tweet, 'available')}
                   className="bg-[#16181c] border border-[#2f3336] p-6 rounded-3xl cursor-grab hover:border-blue-500/50 transition-all"
                 >
-                  <div className="flex gap-6">
+                  <div className="flex gap-4">
+                    <img src={tweet.avatarUrl} alt={tweet.author} className="w-11 h-11 rounded-full mt-1" />
                     <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-4">
-                        <img src={tweet.avatarUrl} alt={tweet.author} className="w-11 h-11 rounded-full" />
-                        <div>
-                          <div className="font-bold">{tweet.author}</div>
-                          <div className="text-gray-500">{tweet.handle}</div>
-                        </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold">{tweet.author}</span>
+                        <span className="text-gray-500">{tweet.handle}</span>
                       </div>
-                      <p className="leading-relaxed text-[15px]">{tweet.content}</p>
-                      <div className="mt-4 flex gap-6 text-sm text-gray-400">
-                        ❤️ {tweet.likes} &nbsp; 🔁 {tweet.reposts}
+                      <p className="mt-2 text-[15px] leading-relaxed">{tweet.content}</p>
+                      
+                      <div className="mt-4 flex items-center gap-6 text-sm text-gray-400">
+                        <span>❤️ {tweet.likes}</span>
+                        <span>🔁 {tweet.reposts}</span>
                       </div>
-                      <a href={`https://x.com/i/status/${tweet.id}`} target="_blank" className="text-blue-400 hover:text-blue-300 text-sm mt-4 inline-block">
-                        View on X →
+
+                      <a 
+                        href={`https://x.com/i/status/${tweet.id}`} 
+                        target="_blank"
+                        className="mt-4 inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 text-sm font-medium"
+                      >
+                        View full post on X →
                       </a>
                     </div>
-
-                    {tweet.mediaUrl && (
-                      <div className="w-80 flex-shrink-0 rounded-2xl overflow-hidden border border-[#2f3336]">
-                        <video 
-                          src={tweet.mediaUrl} 
-                          controls 
-                          className="w-full"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                          }}
-                        />
-                        <div className="text-xs text-gray-500 mt-2 text-center">Video may not load (Twitter links expire)</div>
-                      </div>
-                    )}
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
+          {/* Tier List */}
           <div className="lg:col-span-5">
             <h2 className="text-3xl font-semibold mb-6">Your Tier List</h2>
             <div className="space-y-6">
@@ -215,8 +204,10 @@ export default function TierListApp() {
                   <div className="space-y-4">
                     {tierLists[tier].map((tweet) => (
                       <div key={tweet.id} className="bg-[#1f2429] p-5 rounded-2xl border border-[#2f3336] relative group">
-                        <button onClick={() => removeFromTier(tier, tweet.id)}
-                          className="absolute top-3 right-3 text-xl text-gray-400 hover:text-red-400 opacity-0 group-hover:opacity-100">
+                        <button 
+                          onClick={() => removeFromTier(tier, tweet.id)}
+                          className="absolute top-3 right-3 text-xl text-gray-400 hover:text-red-400 opacity-0 group-hover:opacity-100"
+                        >
                           ×
                         </button>
                         <div className="flex items-center gap-3 mb-3">
@@ -227,7 +218,13 @@ export default function TierListApp() {
                           </div>
                         </div>
                         <p className="text-[15px]">{tweet.content}</p>
-                        {tweet.mediaUrl && <div className="text-xs text-gray-400 mt-3">📹 Video attached</div>}
+                        <a 
+                          href={`https://x.com/i/status/${tweet.id}`} 
+                          target="_blank"
+                          className="text-blue-400 hover:text-blue-300 text-xs mt-3 inline-block"
+                        >
+                          View original on X →
+                        </a>
                       </div>
                     ))}
                   </div>
