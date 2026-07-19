@@ -14,8 +14,66 @@ interface Tweet {
 }
 
 const initialTweets: Tweet[] = [
-  // ← Paste your full initialTweets array here (the one you already have)
-  // Make sure it's exactly the same as in your current code
+  {
+    id: "2078216763024535716",
+    author: "The media SOI 🇬🇧",
+    handle: "@MediaSOI",
+    content: "Up Scotland police pull a taser out on concerned parents after migrants kept a 14 year old girl against her will locked in their flat for 3 days",
+    likes: 1414,
+    reposts: 518,
+    avatarUrl: "https://pbs.twimg.com/profile_images/2074137677620768768/yeoj3BGI.jpg",
+    mediaUrl: "https://video.twimg.com/amplify_video/2078216678232477696/vid/avc1/296x640/mVMm9L0liR8aPWWz.mp4",
+    mediaType: "video"
+  },
+  {
+    id: "2077145657932968156",
+    author: "Russian Garbage Human",
+    handle: "@RusGarbageHuman",
+    content: "The police officer walks straight past the armed foreigners and attacks the native holding some sticks.",
+    likes: 716,
+    reposts: 72,
+    avatarUrl: "https://pbs.twimg.com/profile_images/2008318949448892417/v7L-39OP.jpg",
+    mediaUrl: "https://video.twimg.com/ext_tw_video/2076959374325518337/pu/vid/avc1/712x1276/94rcQTdM8Mg78J5v.mp4",
+    mediaType: "video"
+  },
+  {
+    id: "2075556663164109257",
+    author: "Turning Point UK 🇬🇧",
+    handle: "@TPointUK",
+    content: "West Yorkshire police officer punches 16-year-old girl with special needs in the face. They wouldn't treat an illegal migrant like this.",
+    likes: 5117,
+    reposts: 2311,
+    avatarUrl: "https://pbs.twimg.com/profile_images/1704571042524491776/ieHPB868.jpg",
+    mediaUrl: "https://video.twimg.com/amplify_video/2075556459207700480/vid/avc1/720x1280/dKB7mTRjRY5dROej.mp4",
+    mediaType: "video"
+  },
+  {
+    id: "2074418780726292717",
+    author: "Full Retard Radar",
+    handle: "@FullRetardRadar",
+    content: "Full Retard Radar tweet about police brutality",
+    likes: 0,
+    reposts: 0,
+    avatarUrl: "https://pbs.twimg.com/profile_images/1750000000000000000/default.jpg"
+  },
+  {
+    id: "2074041176559108555",
+    author: "Unity News Network",
+    handle: "@UnityNewsNet",
+    content: "Unity News Network post regarding UK events",
+    likes: 0,
+    reposts: 0,
+    avatarUrl: "https://pbs.twimg.com/profile_images/1750000000000000000/default.jpg"
+  },
+  {
+    id: "2075539170504667425",
+    author: "Rare Axies",
+    handle: "@RareAxies",
+    content: "Test tweet using someone else's video (properly linked)",
+    likes: 0,
+    reposts: 0,
+    avatarUrl: "https://pbs.twimg.com/profile_images/1750000000000000000/default.jpg"
+  },
 ];
 
 const tiers = ['S', 'A', 'B', 'C', 'D', 'E'];
@@ -51,7 +109,6 @@ export default function TierListApp() {
     const tweet = allTweets.find(t => t.id === tweetId);
     if (!tweet) return;
 
-    // Remove from source
     if (source === 'available') {
       setAvailableTweets(prev => prev.filter(t => t.id !== tweetId));
     } else if (fromTier && fromTier !== targetTier) {
@@ -61,7 +118,6 @@ export default function TierListApp() {
       }));
     }
 
-    // Add to target
     if (!tierLists[targetTier].some(t => t.id === tweetId)) {
       setTierLists(prev => ({
         ...prev,
@@ -84,7 +140,7 @@ export default function TierListApp() {
   };
 
   const resetAll = () => {
-    setAvailableTweets(initialTweets);
+    setAvailableTweets([...initialTweets]);
     setTierLists({ S: [], A: [], B: [], C: [], D: [], E: [] });
   };
 
@@ -105,7 +161,6 @@ export default function TierListApp() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-          {/* Available Posts - left side */}
           <div className="lg:col-span-7">
             <h2 className="text-3xl font-semibold mb-6">Available Posts ({availableTweets.length})</h2>
             <div className="space-y-6">
@@ -145,7 +200,6 @@ export default function TierListApp() {
             </div>
           </div>
 
-          {/* Tier List - right side */}
           <div className="lg:col-span-5">
             <h2 className="text-3xl font-semibold mb-6">Your Tier List</h2>
             
