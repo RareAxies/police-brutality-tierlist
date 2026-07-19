@@ -119,7 +119,7 @@ export default function TierListApp() {
                   className="bg-[#16181c] border border-[#2f3336] p-6 rounded-2xl cursor-grab hover:border-[#4b5563] transition-all"
                 >
                   <div className="flex gap-6">
-                    {/* Left: Text */}
+                    {/* Text Side */}
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-4">
                         <img src={tweet.avatarUrl} alt={tweet.author} className="w-10 h-10 rounded-full object-cover" />
@@ -138,9 +138,9 @@ export default function TierListApp() {
                       </a>
                     </div>
 
-                    {/* Right: Media */}
+                    {/* Video Side */}
                     {tweet.mediaUrl && (
-                      <div className="w-96 flex-shrink-0">
+                      <div className="w-[380px] flex-shrink-0">
                         <video 
                           src={tweet.mediaUrl} 
                           controls 
