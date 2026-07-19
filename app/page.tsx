@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 interface Tweet {
   id: string;
@@ -10,11 +10,9 @@ interface Tweet {
   reposts: number;
   avatarUrl: string;
   mediaUrl?: string;
-  thumbnailUrl?: string;
 }
 
 const initialTweets: Tweet[] = [
-  // Your 6 tweets with mediaUrl (same as before)
   {
     id: "2078216763024535716",
     author: "The media SOI 🇬🇧",
@@ -93,12 +91,6 @@ export default function TierListApp() {
   const [tierLists, setTierLists] = useState<Record<string, Tweet[]>>({
     S: [], A: [], B: [], C: [], D: [], E: []
   });
-
-  // Generate thumbnails on client for now (simple version)
-  useEffect(() => {
-    // In a real setup we'd do this server-side with ffmpeg
-    // For now we use video poster attribute in the UI
-  }, []);
 
   const onDragStart = (e: React.DragEvent, tweet: Tweet, source: 'available' | 'tier', tierKey?: string) => {
     e.dataTransfer.setData('tweetId', tweet.id);
@@ -193,15 +185,19 @@ export default function TierListApp() {
                       <div className="relative rounded-2xl overflow-hidden border border-[#2f3336] aspect-video bg-black group">
                         <video 
                           src={tweet.mediaUrl} 
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover opacity-30"
                           muted
-                          poster="" // We can add poster later
                         />
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-all">
-                          <div className="text-5xl text-white/90">▶</div>
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/60 group-hover:bg-black/40 transition-all">
+                          <div className="text-6xl text-white/90 drop-shadow-lg">▶</div>
                         </div>
+                        <div className="absolute bottom-3 left-3 text-xs bg-black/80 px-3 py-1 rounded font-mono">VIDEO</div>
                       </div>
-                      <a href={`https://x.com/i/status/${tweet.id}`} target="_blank" className="block text-center text-blue-400 hover:text-blue-300 text-sm mt-3">
+                      <a 
+                        href={`https://x.com/i/status/${tweet.id}`} 
+                        target="_blank" 
+                        className="block text-center text-blue-400 hover:text-blue-300 text-sm mt-3 font-medium"
+                      >
                         Watch full video on X →
                       </a>
                     </div>
@@ -211,7 +207,6 @@ export default function TierListApp() {
             </div>
           </div>
 
-          {/* Tier List remains the same */}
           <div className="lg:col-span-5">
             <h2 className="text-3xl font-semibold mb-6">Your Tier List</h2>
             <div className="space-y-6">
@@ -226,11 +221,16 @@ export default function TierListApp() {
                   <div className="space-y-4">
                     {tierLists[tier].map((tweet) => (
                       <div key={tweet.id} className="bg-[#1f2429] p-5 rounded-2xl border border-[#2f3336] relative group flex gap-4">
-                        <button onClick={() => removeFromTier(tier, tweet.id)} className="absolute top-3 right-3 text-xl text-gray-400 hover:text-red-400 opacity-0 group-hover:opacity-100">×</button>
+                        <button
+                          onClick={() => removeFromTier(tier, tweet.id)}
+                          className="absolute top-3 right-3 text-xl text-gray-400 hover:text-red-400 opacity-0 group-hover:opacity-100"
+                        >
+                          ×
+                        </button>
                         <img src={tweet.avatarUrl} alt="" className="w-10 h-10 rounded-full flex-shrink-0" />
                         <div className="flex-1">
                           <div className="font-semibold text-sm">{tweet.author}</div>
-                          <p className="text-[15px] mt-1 line-clamp-3">{tweet.content}</p>
+                          <p className="text-[15px] mt-1 line-clamp-3 whitespace-pre-line">{tweet.content}</p>
                           <a href={`https://x.com/i/status/${tweet.id}`} target="_blank" className="text-blue-400 hover:text-blue-300 text-xs mt-2 inline-block">
                             View original →
                           </a>
