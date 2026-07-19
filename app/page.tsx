@@ -188,7 +188,7 @@ export default function TierListApp() {
                           className="w-full h-full object-cover opacity-40"
                           muted
                         />
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/50 group-hover:bg-black/30 transition-all">
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/60 group-hover:bg-black/40 transition-all">
                           <div className="text-6xl text-white/90 drop-shadow-lg">▶</div>
                         </div>
                         <div className="absolute bottom-3 left-3 text-xs bg-black/80 px-3 py-1 rounded font-mono">VIDEO</div>
@@ -221,12 +221,7 @@ export default function TierListApp() {
                   <div className="space-y-4">
                     {tierLists[tier].map((tweet) => (
                       <div key={tweet.id} className="bg-[#1f2429] p-5 rounded-2xl border border-[#2f3336] relative group flex gap-4">
-                        <button
-                          onClick={() => removeFromTier(tier, tweet.id)}
-                          className="absolute top-3 right-3 text-xl text-gray-400 hover:text-red-400 opacity-0 group-hover:opacity-100"
-                        >
-                          ×
-                        </button>
+                        <button onClick={() => removeFromTier(tier, tweet.id)} className="absolute top-3 right-3 text-xl text-gray-400 hover:text-red-400 opacity-0 group-hover:opacity-100">×</button>
                         <img src={tweet.avatarUrl} alt="" className="w-10 h-10 rounded-full flex-shrink-0" />
                         <div className="flex-1">
                           <div className="font-semibold text-sm">{tweet.author}</div>
