@@ -10,7 +10,6 @@ interface Tweet {
   reposts: number;
   avatarUrl: string;
   mediaUrl?: string;
-  mediaType?: 'video' | 'image';
 }
 
 const initialTweets: Tweet[] = [
@@ -22,8 +21,7 @@ const initialTweets: Tweet[] = [
     likes: 1414,
     reposts: 518,
     avatarUrl: "https://pbs.twimg.com/profile_images/2074137677620768768/yeoj3BGI.jpg",
-    mediaUrl: "https://video.twimg.com/amplify_video/2078216678232477696/vid/avc1/296x640/mVMm9L0liR8aPWWz.mp4",
-    mediaType: "video"
+    mediaUrl: "https://video.twimg.com/amplify_video/2078216678232477696/vid/avc1/296x640/mVMm9L0liR8aPWWz.mp4"
   },
   {
     id: "2077145657932968156",
@@ -33,8 +31,7 @@ const initialTweets: Tweet[] = [
     likes: 716,
     reposts: 72,
     avatarUrl: "https://pbs.twimg.com/profile_images/2008318949448892417/v7L-39OP.jpg",
-    mediaUrl: "https://video.twimg.com/ext_tw_video/2076959374325518337/pu/vid/avc1/712x1276/94rcQTdM8Mg78J5v.mp4",
-    mediaType: "video"
+    mediaUrl: "https://video.twimg.com/ext_tw_video/2076959374325518337/pu/vid/avc1/712x1276/94rcQTdM8Mg78J5v.mp4"
   },
   {
     id: "2075556663164109257",
@@ -44,8 +41,7 @@ const initialTweets: Tweet[] = [
     likes: 5117,
     reposts: 2311,
     avatarUrl: "https://pbs.twimg.com/profile_images/1704571042524491776/ieHPB868.jpg",
-    mediaUrl: "https://video.twimg.com/amplify_video/2075556459207700480/vid/avc1/720x1280/dKB7mTRjRY5dROej.mp4",
-    mediaType: "video"
+    mediaUrl: "https://video.twimg.com/amplify_video/2075556459207700480/vid/avc1/720x1280/dKB7mTRjRY5dROej.mp4"
   },
   {
     id: "2074418780726292717",
@@ -54,7 +50,7 @@ const initialTweets: Tweet[] = [
     content: "Full Retard Radar tweet about police brutality",
     likes: 0,
     reposts: 0,
-    avatarUrl: "https://pbs.twimg.com/profile_images/1750000000000000000/default.jpg"
+    avatarUrl: "https://abs.twimg.com/responsive-web/web/default_profile_images/default_profile_400x400.png"
   },
   {
     id: "2074041176559108555",
@@ -63,7 +59,7 @@ const initialTweets: Tweet[] = [
     content: "Unity News Network post regarding UK events",
     likes: 0,
     reposts: 0,
-    avatarUrl: "https://pbs.twimg.com/profile_images/1750000000000000000/default.jpg"
+    avatarUrl: "https://abs.twimg.com/responsive-web/web/default_profile_images/default_profile_400x400.png"
   },
   {
     id: "2075539170504667425",
@@ -72,7 +68,7 @@ const initialTweets: Tweet[] = [
     content: "Test tweet using someone else's video (properly linked)",
     likes: 0,
     reposts: 0,
-    avatarUrl: "https://pbs.twimg.com/profile_images/1750000000000000000/default.jpg"
+    avatarUrl: "https://abs.twimg.com/responsive-web/web/default_profile_images/default_profile_400x400.png"
   },
 ];
 
@@ -152,10 +148,7 @@ export default function TierListApp() {
             <h1 className="text-5xl md:text-6xl font-bold tracking-tight">UK Police Brutality Tier List</h1>
             <p className="text-gray-400 mt-2 text-lg">Drag posts into tiers — focus on the visual evidence</p>
           </div>
-          <button
-            onClick={resetAll}
-            className="px-6 py-3 bg-gray-800 hover:bg-gray-700 rounded-full transition-colors"
-          >
+          <button onClick={resetAll} className="px-6 py-3 bg-gray-800 hover:bg-gray-700 rounded-full transition-colors">
             Reset Everything
           </button>
         </div>
@@ -191,7 +184,15 @@ export default function TierListApp() {
 
                     {tweet.mediaUrl && (
                       <div className="w-80 flex-shrink-0 rounded-2xl overflow-hidden border border-[#2f3336]">
-                        <video src={tweet.mediaUrl} controls className="w-full" />
+                        <video 
+                          src={tweet.mediaUrl} 
+                          controls 
+                          className="w-full"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                        <div className="text-xs text-gray-500 mt-2 text-center">Video may not load (Twitter links expire)</div>
                       </div>
                     )}
                   </div>
@@ -202,7 +203,6 @@ export default function TierListApp() {
 
           <div className="lg:col-span-5">
             <h2 className="text-3xl font-semibold mb-6">Your Tier List</h2>
-            
             <div className="space-y-6">
               {tiers.map(tier => (
                 <div
@@ -212,14 +212,11 @@ export default function TierListApp() {
                   className={`border-2 border-dashed rounded-3xl p-6 min-h-[180px] transition-all ${tierColors[tier]}`}
                 >
                   <div className="text-6xl font-black mb-6 opacity-90">{tier}</div>
-                  
                   <div className="space-y-4">
                     {tierLists[tier].map((tweet) => (
                       <div key={tweet.id} className="bg-[#1f2429] p-5 rounded-2xl border border-[#2f3336] relative group">
-                        <button
-                          onClick={() => removeFromTier(tier, tweet.id)}
-                          className="absolute top-3 right-3 text-xl text-gray-400 hover:text-red-400 opacity-0 group-hover:opacity-100"
-                        >
+                        <button onClick={() => removeFromTier(tier, tweet.id)}
+                          className="absolute top-3 right-3 text-xl text-gray-400 hover:text-red-400 opacity-0 group-hover:opacity-100">
                           ×
                         </button>
                         <div className="flex items-center gap-3 mb-3">
@@ -230,7 +227,7 @@ export default function TierListApp() {
                           </div>
                         </div>
                         <p className="text-[15px]">{tweet.content}</p>
-                        {tweet.mediaUrl && <div className="text-xs text-blue-400 mt-3">📹 Video attached</div>}
+                        {tweet.mediaUrl && <div className="text-xs text-gray-400 mt-3">📹 Video attached</div>}
                       </div>
                     ))}
                   </div>
