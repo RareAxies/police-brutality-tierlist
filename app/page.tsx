@@ -99,7 +99,7 @@ export default function TierListApp() {
     S: [], A: [], B: [], C: [], D: [], E: []
   });
 
-  const onDragStart = (e: React.DragEvent, tweet: Tweet, source: 'available' | 'tier', tierKey?: string) => {
+  const onDragStart = (e: React.DragEvent, tweet: Tweet) => {
     e.dataTransfer.setData('tweet', JSON.stringify(tweet));
   };
 
@@ -146,7 +146,7 @@ export default function TierListApp() {
                 <div
                   key={tweet.id}
                   draggable
-                  onDragStart={(e) => onDragStart(e, tweet, 'available')}
+                  onDragStart={(e) => onDragStart(e, tweet)}
                   className="bg-[#16181c] border border-[#2f3336] p-6 rounded-3xl cursor-grab hover:border-blue-500/50 transition-all flex gap-6"
                 >
                   <div className="flex-1">
