@@ -22,7 +22,7 @@ const initialTweets: Tweet[] = [
     likes: 2093,
     reposts: 801,
     avatarUrl: "https://pbs.twimg.com/profile_images/2074137677620768768/yeoj3BGI.jpg",
-    thumbnailUrl: "https://drive.google.com/uc?id=19jtigq-8idjGO_IntuNF4Ux7KvMBofgt",
+    thumbnailUrl: "https://drive.google.com/uc?id=19jtigq-8idjGO_IntuNF4Ux7KvMBofgt", // replace with your direct one if needed
     tweetUrl: "https://x.com/MediaSOI/status/2078216763024535716"
   },
   {
