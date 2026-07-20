@@ -22,7 +22,7 @@ const initialTweets: Tweet[] = [
     likes: 2093,
     reposts: 801,
     avatarUrl: "https://pbs.twimg.com/profile_images/2074137677620768768/yeoj3BGI.jpg",
-    thumbnailUrl: "https://drive.google.com/uc?id=19jtigq-8idjGO_IntuNF4Ux7KvMBofgt", // replace with your direct one if needed
+    thumbnailUrl: "https://i.postimg.cc/YourLink1.jpg", // replace with your actual column D link
     tweetUrl: "https://x.com/MediaSOI/status/2078216763024535716"
   },
   {
@@ -33,7 +33,7 @@ const initialTweets: Tweet[] = [
     likes: 717,
     reposts: 72,
     avatarUrl: "https://pbs.twimg.com/profile_images/2008318949448892417/v7L-39OP.jpg",
-    thumbnailUrl: "https://drive.google.com/uc?id=1KYJXSDhntFjDVKWa4hD8Ami2p5vAYv_c",
+    thumbnailUrl: "https://i.postimg.cc/YourLink2.jpg",
     tweetUrl: "https://x.com/RusGarbageHuman/status/2077145657932968156"
   },
   {
@@ -44,7 +44,7 @@ const initialTweets: Tweet[] = [
     likes: 5112,
     reposts: 2307,
     avatarUrl: "https://pbs.twimg.com/profile_images/1704571042524491776/ieHPB868.jpg",
-    thumbnailUrl: "https://drive.google.com/uc?id=1cjdlUNdZnh4_VCBkY6uOoTC9XfHL_1Bp",
+    thumbnailUrl: "https://i.postimg.cc/YourLink3.jpg",
     tweetUrl: "https://x.com/TPointUK/status/2075556663164109257"
   },
   {
@@ -55,7 +55,7 @@ const initialTweets: Tweet[] = [
     likes: 76,
     reposts: 39,
     avatarUrl: "https://pbs.twimg.com/profile_images/2067713504182697984/xG9JHwPk.jpg",
-    thumbnailUrl: "https://drive.google.com/uc?id=1Mxx0X0-sDVppcWafd6KJyLGo7knGa9kE",
+    thumbnailUrl: "https://i.postimg.cc/YourLink4.jpg",
     tweetUrl: "https://x.com/FullRetardRadar/status/2074418780726292717"
   },
   {
@@ -66,7 +66,7 @@ const initialTweets: Tweet[] = [
     likes: 3175,
     reposts: 737,
     avatarUrl: "https://pbs.twimg.com/profile_images/1133287235531485190/BdNIkUda.jpg",
-    thumbnailUrl: "https://drive.google.com/uc?id=1SsiDyNMzp_Uwv34NNttdrqkg9NvjL7oT",
+    thumbnailUrl: "https://i.postimg.cc/YourLink5.jpg",
     tweetUrl: "https://x.com/UnityNewsNet/status/2074041176559108555"
   },
   {
@@ -77,7 +77,7 @@ const initialTweets: Tweet[] = [
     likes: 49,
     reposts: 15,
     avatarUrl: "https://pbs.twimg.com/profile_images/2015038970405572608/lbcRtHrS.jpg",
-    thumbnailUrl: "https://drive.google.com/uc?id=1MTk19MleaHauXBecM-1ova0SUrzEJhjP",
+    thumbnailUrl: "https://i.postimg.cc/YourLink6.jpg",
     tweetUrl: "https://x.com/RareAxies/status/2075539170504667425"
   },
 ];
