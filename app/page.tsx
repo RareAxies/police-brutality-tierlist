@@ -15,6 +15,17 @@ interface Tweet {
 
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1lUu200jZW545f5WqQdqsL-rupAyb3-SazTIPDbtFgpk/gviz/tq?tqx=out:csv';
 
+const tiers = ['S', 'A', 'B', 'C', 'D', 'E'];
+
+const tierColors: Record<string, string> = {
+  S: 'bg-red-600/20 border-red-500 text-red-400',
+  A: 'bg-orange-600/20 border-orange-500 text-orange-400',
+  B: 'bg-yellow-600/20 border-yellow-500 text-yellow-400',
+  C: 'bg-emerald-600/20 border-emerald-500 text-emerald-400',
+  D: 'bg-blue-600/20 border-blue-500 text-blue-400',
+  E: 'bg-gray-600/20 border-gray-500 text-gray-400',
+};
+
 export default function TierListApp() {
   const [availableTweets, setAvailableTweets] = useState<Tweet[]>([]);
   const [tierLists, setTierLists] = useState<Record<string, Tweet[]>>({
@@ -25,9 +36,9 @@ export default function TierListApp() {
     fetch(SHEET_URL)
       .then(res => res.text())
       .then(csvText => {
-        const rows = csvText.split('\n').slice(1); // skip header
+        const rows = csvText.split('\n').slice(1);
         const tweets = rows.map(row => {
-          const cols = row.split(',').map(c => c.replace(/^"|"$/g, ''));
+          const cols = row.split(',').map(c => c.replace(/^"|"$/g, '').trim());
           const tweetUrl = cols[0];
           const id = tweetUrl.split('/').pop() || '';
           return {
@@ -39,7 +50,7 @@ export default function TierListApp() {
             reposts: parseInt(cols[7]) || 0,
             avatarUrl: cols[1] || '',
             thumbnailUrl: cols[2] || '',
-            tweetUrl: tweetUrl
+            tweetUrl
           };
         });
         setAvailableTweets(tweets);
