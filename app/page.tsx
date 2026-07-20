@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface Tweet {
   id: string;
@@ -9,136 +9,67 @@ interface Tweet {
   likes: number;
   reposts: number;
   avatarUrl: string;
-  mediaUrl?: string;
+  thumbnailUrl: string;
+  tweetUrl: string;
 }
 
-const initialTweets: Tweet[] = [
-  {
-    id: "2078216763024535716",
-    author: "The media SOI 🇬🇧",
-    handle: "@MediaSOI",
-    content: "Up Scotland police pull a taser out on concerned parents after migrants kept a 14 year old girl against her will locked in their flat for 3 days",
-    likes: 2093,
-    reposts: 801,
-    avatarUrl: "https://pbs.twimg.com/profile_images/2074137677620768768/yeoj3BGI.jpg",
-    mediaUrl: "https://video.twimg.com/amplify_video/2078216678232477696/vid/avc1/296x640/mVMm9L0liR8aPWWz.mp4"
-  },
-  {
-    id: "2077145657932968156",
-    author: "Russian Garbage Human",
-    handle: "@RusGarbageHuman",
-    content: "The police officer walks straight past the armed foreigners and attacks the native holding some sticks.",
-    likes: 717,
-    reposts: 72,
-    avatarUrl: "https://pbs.twimg.com/profile_images/2008318949448892417/v7L-39OP.jpg",
-    mediaUrl: "https://video.twimg.com/ext_tw_video/2076959374325518337/pu/vid/avc1/712x1276/94rcQTdM8Mg78J5v.mp4"
-  },
-  {
-    id: "2075556663164109257",
-    author: "Turning Point UK 🇬🇧",
-    handle: "@TPointUK",
-    content: "West Yorkshire police officer punches 16-year-old girl with special needs in the face. They wouldn't treat an illegal migrant like this.",
-    likes: 5112,
-    reposts: 2307,
-    avatarUrl: "https://pbs.twimg.com/profile_images/1704571042524491776/ieHPB868.jpg",
-    mediaUrl: "https://video.twimg.com/amplify_video/2075556459207700480/vid/avc1/720x1280/dKB7mTRjRY5dROej.mp4"
-  },
-  {
-    id: "2074418780726292717",
-    author: "Retard Radar",
-    handle: "@FullRetardRadar",
-    content: "Absolute state of British police.\nInvader casually walks up to a police car, pops the door like it’s his personal Uber, springs his fellow criminal invader, and they both bolt while the coppers just stand there.",
-    likes: 76,
-    reposts: 39,
-    avatarUrl: "https://pbs.twimg.com/profile_images/2067713504182697984/xG9JHwPk.jpg",
-    mediaUrl: "https://video.twimg.com/amplify_video/2074418750703509504/vid/avc1/540x960/h4SSWfPX6Hfta3Z8.mp4"
-  },
-  {
-    id: "2074041176559108555",
-    author: "UNN",
-    handle: "@UnityNewsNet",
-    content: "British Constables are taught to hate the people.\n\nDon't trust them.\n\nDon't consent to them.",
-    likes: 3175,
-    reposts: 737,
-    avatarUrl: "https://pbs.twimg.com/profile_images/1133287235531485190/BdNIkUda.jpg",
-    mediaUrl: "https://video.twimg.com/amplify_video/2074040943863300097/vid/avc1/720x894/iW-3Nfwnd0-31R3M.mp4"
-  },
-  {
-    id: "2075539170504667425",
-    author: "Rare | ♻️🇬🇧",
-    handle: "@RareAxies",
-    content: "Sadiq Khan responds to images of Moroccan football fans rioting in London:\n\nI've seen the videos from Edgware Road & I'm proud of our brave Met officers for their tactical retreat, showing true community sensitivity! \n\nCredit to those passionate Moroccan fans for bringing such lively energy to our streets.\n\nLondon is safer with me in charge. Alhamdulillah!",
-    likes: 49,
-    reposts: 15,
-    avatarUrl: "https://pbs.twimg.com/profile_images/2015038970405572608/lbcRtHrS.jpg",
-    mediaUrl: "https://video.twimg.com/amplify_video/2075470209431814144/vid/avc1/1920x1080/K8qF3qoHikFQXusn.mp4"
-  },
-];
-
-const tiers = ['S', 'A', 'B', 'C', 'D', 'E'];
-
-const tierColors: Record<string, string> = {
-  S: 'bg-red-600/20 border-red-500 text-red-400',
-  A: 'bg-orange-600/20 border-orange-500 text-orange-400',
-  B: 'bg-yellow-600/20 border-yellow-500 text-yellow-400',
-  C: 'bg-emerald-600/20 border-emerald-500 text-emerald-400',
-  D: 'bg-blue-600/20 border-blue-500 text-blue-400',
-  E: 'bg-gray-600/20 border-gray-500 text-gray-400',
-};
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1lUu200jZW545f5WqQdqsL-rupAyb3-SazTIPDbtFgpk/gviz/tq?tqx=out:csv';
 
 export default function TierListApp() {
-  const [availableTweets, setAvailableTweets] = useState<Tweet[]>(initialTweets);
+  const [availableTweets, setAvailableTweets] = useState<Tweet[]>([]);
   const [tierLists, setTierLists] = useState<Record<string, Tweet[]>>({
     S: [], A: [], B: [], C: [], D: [], E: []
   });
 
+  useEffect(() => {
+    fetch(SHEET_URL)
+      .then(res => res.text())
+      .then(csvText => {
+        const rows = csvText.split('\n').slice(1); // skip header
+        const tweets = rows.map(row => {
+          const cols = row.split(',').map(c => c.replace(/^"|"$/g, ''));
+          const tweetUrl = cols[0];
+          const id = tweetUrl.split('/').pop() || '';
+          return {
+            id,
+            author: cols[4] || 'Unknown',
+            handle: cols[5] || '',
+            content: cols[3] || '',
+            likes: parseInt(cols[6]) || 0,
+            reposts: parseInt(cols[7]) || 0,
+            avatarUrl: cols[1] || '',
+            thumbnailUrl: cols[2] || '',
+            tweetUrl: tweetUrl
+          };
+        });
+        setAvailableTweets(tweets);
+      })
+      .catch(err => console.error('Failed to load sheet', err));
+  }, []);
+
   const onDragStart = (e: React.DragEvent, tweet: Tweet, source: 'available' | 'tier', tierKey?: string) => {
-    e.dataTransfer.setData('tweetId', tweet.id);
-    e.dataTransfer.setData('source', source);
-    if (tierKey) e.dataTransfer.setData('fromTier', tierKey);
+    e.dataTransfer.setData('tweet', JSON.stringify(tweet));
   };
 
   const onDrop = (e: React.DragEvent, targetTier: string) => {
     e.preventDefault();
-    const tweetId = e.dataTransfer.getData('tweetId');
-    const source = e.dataTransfer.getData('source') as 'available' | 'tier';
-    const fromTier = e.dataTransfer.getData('fromTier');
-
-    const allTweets = [...availableTweets, ...Object.values(tierLists).flat()];
-    const tweet = allTweets.find(t => t.id === tweetId);
-    if (!tweet) return;
-
-    if (source === 'available') {
-      setAvailableTweets(prev => prev.filter(t => t.id !== tweetId));
-    } else if (fromTier && fromTier !== targetTier) {
-      setTierLists(prev => ({
-        ...prev,
-        [fromTier]: prev[fromTier].filter(t => t.id !== tweetId)
-      }));
-    }
-
-    if (!tierLists[targetTier].some(t => t.id === tweetId)) {
-      setTierLists(prev => ({
-        ...prev,
-        [targetTier]: [...prev[targetTier], tweet]
-      }));
-    }
+    const tweet = JSON.parse(e.dataTransfer.getData('tweet'));
+    setTierLists(prev => ({
+      ...prev,
+      [targetTier]: [...prev[targetTier], tweet]
+    }));
   };
 
   const onDragOver = (e: React.DragEvent) => e.preventDefault();
 
   const removeFromTier = (tier: string, tweetId: string) => {
-    const tweet = tierLists[tier].find(t => t.id === tweetId);
-    if (!tweet) return;
     setTierLists(prev => ({
       ...prev,
       [tier]: prev[tier].filter(t => t.id !== tweetId)
     }));
-    setAvailableTweets(prev => [...prev, tweet]);
   };
 
   const resetAll = () => {
-    setAvailableTweets([...initialTweets]);
     setTierLists({ S: [], A: [], B: [], C: [], D: [], E: [] });
   };
 
@@ -180,24 +111,15 @@ export default function TierListApp() {
                     </div>
                   </div>
 
-                  {tweet.mediaUrl && (
+                  {tweet.thumbnailUrl && (
                     <div className="w-80 flex-shrink-0">
                       <div className="relative rounded-2xl overflow-hidden border border-[#2f3336] aspect-video bg-black group">
-                        <video 
-                          src={tweet.mediaUrl} 
-                          className="w-full h-full object-cover opacity-40"
-                          muted
-                        />
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/60 group-hover:bg-black/40 transition-all">
-                          <div className="text-6xl text-white/90 drop-shadow-lg">▶</div>
+                        <img src={tweet.thumbnailUrl} alt="Thumbnail" className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/50 group-hover:bg-black/30 transition-all">
+                          <div className="text-6xl text-white/90">▶</div>
                         </div>
-                        <div className="absolute bottom-3 left-3 text-xs bg-black/80 px-3 py-1 rounded font-mono">VIDEO</div>
                       </div>
-                      <a 
-                        href={`https://x.com/i/status/${tweet.id}`} 
-                        target="_blank" 
-                        className="block text-center text-blue-400 hover:text-blue-300 text-sm mt-3 font-medium"
-                      >
+                      <a href={tweet.tweetUrl} target="_blank" className="block text-center text-blue-400 hover:text-blue-300 text-sm mt-3 font-medium">
                         Watch full video on X →
                       </a>
                     </div>
@@ -226,7 +148,7 @@ export default function TierListApp() {
                         <div className="flex-1">
                           <div className="font-semibold text-sm">{tweet.author}</div>
                           <p className="text-[15px] mt-1 line-clamp-3 whitespace-pre-line">{tweet.content}</p>
-                          <a href={`https://x.com/i/status/${tweet.id}`} target="_blank" className="text-blue-400 hover:text-blue-300 text-xs mt-2 inline-block">
+                          <a href={tweet.tweetUrl} target="_blank" className="text-blue-400 hover:text-blue-300 text-xs mt-2 inline-block">
                             View original →
                           </a>
                         </div>
