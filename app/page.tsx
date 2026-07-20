@@ -13,7 +13,7 @@ interface Tweet {
   tweetUrl: string;
 }
 
-const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1lUu200jZW545f5WqQdqsL-rupAyb3-SazTIPDbtFgpk/gviz/tq?tqx=out:csv';
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1lUu200jZW545f5WqQdqsL-rupAyb3-SazTIPDbtFgpk/export?format=csv';
 
 const tiers = ['S', 'A', 'B', 'C', 'D', 'E'];
 
