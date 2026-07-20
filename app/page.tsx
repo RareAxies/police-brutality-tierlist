@@ -33,7 +33,7 @@ const initialTweets: Tweet[] = [
     likes: 717,
     reposts: 72,
     avatarUrl: "https://pbs.twimg.com/profile_images/2008318949448892417/v7L-39OP.jpg",
-    thumbnailUrl: "https://i.postimg.cc/JskQ6WS8", // replace with your full link from column D
+    thumbnailUrl: "https://i.postimg.cc/JskQ6WS8",
     tweetUrl: "https://x.com/RusGarbageHuman/status/2077145657932968156"
   },
   {
@@ -44,7 +44,7 @@ const initialTweets: Tweet[] = [
     likes: 5112,
     reposts: 2307,
     avatarUrl: "https://pbs.twimg.com/profile_images/1704571042524491776/ieHPB868.jpg",
-    thumbnailUrl: "https://i.postimg.cc/ZWdL7hXb", // replace with your full link from column D
+    thumbnailUrl: "https://i.postimg.cc/ZWdL7hXb",
     tweetUrl: "https://x.com/TPointUK/status/2075556663164109257"
   },
   {
@@ -55,7 +55,7 @@ const initialTweets: Tweet[] = [
     likes: 76,
     reposts: 39,
     avatarUrl: "https://pbs.twimg.com/profile_images/2067713504182697984/xG9JHwPk.jpg",
-    thumbnailUrl: "https://i.postimg.cc/bZtRCj4j", // replace with your full link from column D
+    thumbnailUrl: "https://i.postimg.cc/bZtRCj4j",
     tweetUrl: "https://x.com/FullRetardRadar/status/2074418780726292717"
   },
   {
@@ -66,7 +66,7 @@ const initialTweets: Tweet[] = [
     likes: 3175,
     reposts: 737,
     avatarUrl: "https://pbs.twimg.com/profile_images/1133287235531485190/BdNIkUda.jpg",
-    thumbnailUrl: "https://i.postimg.cc/zLYF4c18", // replace with your full link from column D
+    thumbnailUrl: "https://i.postimg.cc/zLYF4c18",
     tweetUrl: "https://x.com/UnityNewsNet/status/2074041176559108555"
   },
   {
@@ -77,7 +77,7 @@ const initialTweets: Tweet[] = [
     likes: 49,
     reposts: 15,
     avatarUrl: "https://pbs.twimg.com/profile_images/2015038970405572608/lbcRtHrS.jpg",
-    thumbnailUrl: "https://i.postimg.cc/FfXVwBQ9", // replace with your full link from column D
+    thumbnailUrl: "https://i.postimg.cc/FfXVwBQ9",
     tweetUrl: "https://x.com/RareAxies/status/2075539170504667425"
   },
 ];
