@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface Tweet {
   id: string;
@@ -13,31 +13,7 @@ interface Tweet {
   tweetUrl: string;
 }
 
-const initialTweets: Tweet[] = [
-  {
-    id: "2078216763024535716",
-    author: "The media SOI 🇬🇧",
-    handle: "@MediaSOI",
-    content: "Up Scotland police pull a taser out on concerned parents after migrants kept a 14 year old girl against her will locked in their flat for 3 days",
-    likes: 2093,
-    reposts: 801,
-    avatarUrl: "https://pbs.twimg.com/profile_images/2074137677620768768/yeoj3BGI.jpg",
-    thumbnailUrl: "https://your-thumbnail-url-1.jpg", // replace with your actual thumbnail URL from the sheet
-    tweetUrl: "https://x.com/MediaSOI/status/2078216763024535716"
-  },
-  {
-    id: "2077145657932968156",
-    author: "Russian Garbage Human",
-    handle: "@RusGarbageHuman",
-    content: "The police officer walks straight past the armed foreigners and attacks the native holding some sticks.",
-    likes: 717,
-    reposts: 72,
-    avatarUrl: "https://pbs.twimg.com/profile_images/2008318949448892417/v7L-39OP.jpg",
-    thumbnailUrl: "https://your-thumbnail-url-2.jpg",
-    tweetUrl: "https://x.com/RusGarbageHuman/status/2077145657932968156"
-  },
-  // add the other 4 in the same format using the data from your sheet
-];
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1lUu200jZW545f5WqQdqsL-rupAyb3-SazTIPDbtFgpk/export?format=csv';
 
 const tiers = ['S', 'A', 'B', 'C', 'D', 'E'];
 
@@ -51,10 +27,36 @@ const tierColors: Record<string, string> = {
 };
 
 export default function TierListApp() {
-  const [availableTweets, setAvailableTweets] = useState<Tweet[]>(initialTweets);
+  const [availableTweets, setAvailableTweets] = useState<Tweet[]>([]);
   const [tierLists, setTierLists] = useState<Record<string, Tweet[]>>({
     S: [], A: [], B: [], C: [], D: [], E: []
   });
+
+  useEffect(() => {
+    fetch(SHEET_URL)
+      .then(res => res.text())
+      .then(csvText => {
+        const rows = csvText.split('\n').slice(1);
+        const tweets = rows.map(row => {
+          const cols = row.split(',').map(c => c.replace(/^"|"$/g, '').trim());
+          const tweetUrl = cols[0];
+          const id = tweetUrl.split('/').pop() || '';
+          return {
+            id,
+            author: cols[4] || 'Unknown',
+            handle: cols[5] || '',
+            content: cols[3] || '',
+            likes: parseInt(cols[6]) || 0,
+            reposts: parseInt(cols[7]) || 0,
+            avatarUrl: cols[1] || '',
+            thumbnailUrl: cols[8] || '', // new direct image URL column
+            tweetUrl
+          };
+        });
+        setAvailableTweets(tweets);
+      })
+      .catch(err => console.error('Failed to load sheet', err));
+  }, []);
 
   const onDragStart = (e: React.DragEvent, tweet: Tweet, source: 'available' | 'tier', tierKey?: string) => {
     e.dataTransfer.setData('tweet', JSON.stringify(tweet));
