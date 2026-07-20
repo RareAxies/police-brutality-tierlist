@@ -51,7 +51,7 @@ const initialTweets: Tweet[] = [
     id: "2074418780726292717",
     author: "Retard Radar",
     handle: "@FullRetardRadar",
-    content: "Absolute state of British police.\nInvader casually walks up to a police car, pops the door like it’s his personal Uber, springs his fellow criminal invader, and they both bolt while the coppers just stand there.",
+    content: "Absolute state of British police. Invader casually walks up to a police car, pops the door like it’s his personal Uber, springs his fellow criminal invader, and they both bolt while the coppers just stand there.",
     likes: 76,
     reposts: 39,
     avatarUrl: "https://pbs.twimg.com/profile_images/2067713504182697984/xG9JHwPk.jpg",
@@ -157,4 +157,62 @@ export default function TierListApp() {
                         <div className="text-gray-500 text-sm">{tweet.handle}</div>
                       </div>
                     </div>
-                    <p className="text-[15px
+                    <p className="text-[15px] leading-relaxed whitespace-pre-line">{tweet.content}</p>
+                    <div className="mt-4 flex gap-6 text-sm text-gray-400">
+                      ❤️ {tweet.likes} &nbsp; 🔁 {tweet.reposts}
+                    </div>
+                  </div>
+
+                  {tweet.thumbnailUrl && (
+                    <div className="w-80 flex-shrink-0">
+                      <div className="relative rounded-2xl overflow-hidden border border-[#2f3336] aspect-video bg-black group">
+                        <img src={tweet.thumbnailUrl} alt="Thumbnail" className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/50 group-hover:bg-black/30 transition-all">
+                          <div className="text-6xl text-white/90">▶</div>
+                        </div>
+                      </div>
+                      <a href={tweet.tweetUrl} target="_blank" className="block text-center text-blue-400 hover:text-blue-300 text-sm mt-3 font-medium">
+                        Watch full video on X →
+                      </a>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="lg:col-span-5">
+            <h2 className="text-3xl font-semibold mb-6">Your Tier List</h2>
+            <div className="space-y-6">
+              {tiers.map(tier => (
+                <div
+                  key={tier}
+                  onDrop={(e) => onDrop(e, tier)}
+                  onDragOver={onDragOver}
+                  className={`border-2 border-dashed rounded-3xl p-6 min-h-[180px] transition-all ${tierColors[tier]}`}
+                >
+                  <div className="text-6xl font-black mb-6 opacity-90">{tier}</div>
+                  <div className="space-y-4">
+                    {tierLists[tier].map((tweet) => (
+                      <div key={tweet.id} className="bg-[#1f2429] p-5 rounded-2xl border border-[#2f3336] relative group flex gap-4">
+                        <button onClick={() => removeFromTier(tier, tweet.id)} className="absolute top-3 right-3 text-xl text-gray-400 hover:text-red-400 opacity-0 group-hover:opacity-100">×</button>
+                        <img src={tweet.avatarUrl} alt="" className="w-10 h-10 rounded-full flex-shrink-0" />
+                        <div className="flex-1">
+                          <div className="font-semibold text-sm">{tweet.author}</div>
+                          <p className="text-[15px] mt-1 line-clamp-3 whitespace-pre-line">{tweet.content}</p>
+                          <a href={tweet.tweetUrl} target="_blank" className="text-blue-400 hover:text-blue-300 text-xs mt-2 inline-block">
+                            View original →
+                          </a>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
