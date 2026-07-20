@@ -51,7 +51,7 @@ const initialTweets: Tweet[] = [
     id: "2074418780726292717",
     author: "Retard Radar",
     handle: "@FullRetardRadar",
-    content: "Absolute state of British police. Invader casually walks up to a police car, pops the door like it’s his personal Uber, springs his fellow criminal invader, and they both bolt while the coppers just stand there.",
+    content: "Absolute state of British police.\nInvader casually walks up to a police car, pops the door like it’s his personal Uber, springs his fellow criminal invader, and they both bolt while the coppers just stand there.",
     likes: 76,
     reposts: 39,
     avatarUrl: "https://pbs.twimg.com/profile_images/2067713504182697984/xG9JHwPk.jpg",
