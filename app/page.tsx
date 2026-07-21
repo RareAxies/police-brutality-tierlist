@@ -102,7 +102,7 @@ export default function TierListApp() {
 
   return (
     <div className="min-h-screen bg-black text-white p-6 md:p-10">
-      <div class="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <h1 className="text-4xl md:text-5xl font-bold text-center mb-2">UK Police Brutality Tier List</h1>
         <p className="text-gray-400 text-center mb-10">Drag the tweets into tiers</p>
 
