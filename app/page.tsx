@@ -22,35 +22,35 @@ const initialTweets: Tweet[] = [
     id: "2075539170504667425",
     author: "Rare | ♻️🇬🇧",
     handle: "@RareAxies",
-    content: "Sadiq Khan responds to images of Moroccan football fans rioting in London...",
+    content: "Sadiq Khan responds to images of Moroccan football fans rioting in London: I've seen the videos from Edgware Road & I'm proud of our brave Met officers for their tactical retreat, showing true community sensitivity! Credit to those passionate Moroccan fans for bringing such lively energy to our streets. London is safer with me in charge. Alhamdulillah!",
     tweetUrl: "https://x.com/RareAxies/status/2075539170504667425"
   },
   {
     id: "2074041176559108555",
     author: "UNN",
     handle: "@UnityNewsNet",
-    content: "British Constables are taught to hate the people...",
+    content: "British Constables are taught to hate the people. Don't trust them. Don't consent to them.",
     tweetUrl: "https://x.com/UnityNewsNet/status/2074041176559108555"
   },
   {
     id: "2074418780726292717",
     author: "Retard Radar",
     handle: "@FullRetardRadar",
-    content: "Absolute state of British police...",
-    tweetUrl: "https://x.com/FullRetardRadar/status/2074418780722717"
+    content: "Absolute state of British police. Invader casually walks up to a police car, pops the door like it’s his personal Uber, springs his fellow criminal invader, and they both bolt while the coppers just stand there.",
+    tweetUrl: "https://x.com/FullRetardRadar/status/2074418780726292717"
   },
   {
     id: "2075556663164109257",
     author: "Turning Point UK 🇬🇧",
     handle: "@TPointUK",
-    content: "West Yorkshire police officer punches 16-year-old girl with special needs in the face...",
+    content: "West Yorkshire police officer punches 16-year-old girl with special needs in the face. They wouldn't treat an illegal migrant like this.",
     tweetUrl: "https://x.com/TPointUK/status/2075556663164109257"
   },
   {
     id: "2077145657932968156",
     author: "Russian Garbage Human",
     handle: "@RusGarbageHuman",
-    content: "The police officer walks straight past the armed foreigners and attacks the native holding some sticks...",
+    content: "The police officer walks straight past the armed foreigners and attacks the native holding some sticks. You should be coming up to such officers, recording his face, voice and collar number.",
     tweetUrl: "https://x.com/RusGarbageHuman/status/2077145657932968156"
   },
 ];
@@ -63,7 +63,7 @@ export default function TierListApp() {
     S: [], A: [], B: [], C: [], D: [], E: []
   });
 
-  // Load X widgets.js once
+  // Load X widgets.js
   useEffect(() => {
     const script = document.createElement('script');
     script.src = 'https://platform.twitter.com/widgets.js';
@@ -75,10 +75,10 @@ export default function TierListApp() {
     };
   }, []);
 
-  // Re-render embeds when tweets change
+  // Re-render embeds when list changes
   useEffect(() => {
     // @ts-ignore
-    if (window.twttr && window.twttr.widgets) {
+    if (window.twttr?.widgets) {
       // @ts-ignore
       window.twttr.widgets.load();
     }
@@ -102,7 +102,7 @@ export default function TierListApp() {
 
   return (
     <div className="min-h-screen bg-black text-white p-6 md:p-10">
-      <div className="max-w-7xl mx-auto">
+      <div class="max-w-7xl mx-auto">
         <h1 className="text-4xl md:text-5xl font-bold text-center mb-2">UK Police Brutality Tier List</h1>
         <p className="text-gray-400 text-center mb-10">Drag the tweets into tiers</p>
 
@@ -118,7 +118,6 @@ export default function TierListApp() {
                   onDragStart={(e) => onDragStart(e, tweet)}
                   className="bg-[#16181c] border border-[#2f3336] rounded-2xl p-4 cursor-grab hover:border-gray-500 transition-all"
                 >
-                  {/* Official X Embed */}
                   <blockquote className="twitter-tweet" data-theme="dark">
                     <a href={tweet.tweetUrl}></a>
                   </blockquote>
@@ -142,14 +141,15 @@ export default function TierListApp() {
                   
                   <div className="space-y-4">
                     {tierLists[tier].map((tweet, i) => (
-                      <div key={i} className="bg-[#1f2429] p-3 rounded-xl border border-[#2f3336]">
-                        <div className="font-semibold text-sm mb-1">{tweet.author}</div>
-                        <div className="text-xs text-gray-400 mb-2">{tweet.handle}</div>
-                        <p className="text-sm line-clamp-3">{tweet.content}</p>
+                      <div key={i} className="bg-[#1f2429] p-4 rounded-xl border border-[#2f3336]">
+                        <div className="font-semibold text-sm">{tweet.author}</div>
+                        <div className="text-xs text-gray-400 mb-1">{tweet.handle}</div>
+                        <p className="text-sm line-clamp-3 mt-1">{tweet.content}</p>
                         <a 
                           href={tweet.tweetUrl} 
                           target="_blank" 
-                          className="text-blue-400 text-xs mt-2 inline-block"
+                          rel="noopener noreferrer"
+                          className="text-blue-400 text-xs mt-2 inline-block hover:underline"
                         >
                           View original →
                         </a>
