@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { toPng } from 'html-to-image';
 
 interface Tweet {
@@ -329,16 +329,74 @@ export default function TierListApp() {
   const [isEditing, setIsEditing] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [editingTier, setEditingTier] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const scrollRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const cleanRef = useRef<HTMLDivElement>(null);
+  const scrollInterval = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Auto-scroll while dragging near top/bottom edges
+  useEffect(() => {
+    if (!isDragging) {
+      if (scrollInterval.current) {
+        clearInterval(scrollInterval.current);
+        scrollInterval.current = null;
+      }
+      return;
+    }
+
+    const EDGE = 100; // px from edge that triggers scroll
+    const SPEED = 12; // px per tick
+
+    const handleDragOver = (e: DragEvent) => {
+      const y = e.clientY;
+      const h = window.innerHeight;
+
+      if (scrollInterval.current) {
+        clearInterval(scrollInterval.current);
+        scrollInterval.current = null;
+      }
+
+      if (y < EDGE) {
+        // near top → scroll up
+        scrollInterval.current = setInterval(() => {
+          window.scrollBy(0, -SPEED);
+        }, 16);
+      } else if (y > h - EDGE) {
+        // near bottom → scroll down
+        scrollInterval.current = setInterval(() => {
+          window.scrollBy(0, SPEED);
+        }, 16);
+      }
+    };
+
+    const stopScroll = () => {
+      if (scrollInterval.current) {
+        clearInterval(scrollInterval.current);
+        scrollInterval.current = null;
+      }
+    };
+
+    window.addEventListener('dragover', handleDragOver);
+    window.addEventListener('dragend', stopScroll);
+    window.addEventListener('drop', stopScroll);
+
+    return () => {
+      window.removeEventListener('dragover', handleDragOver);
+      window.removeEventListener('dragend', stopScroll);
+      window.removeEventListener('drop', stopScroll);
+      stopScroll();
+    };
+  }, [isDragging]);
 
   const onDragStart = (e: React.DragEvent, tweet: Tweet, fromTier: string) => {
     e.dataTransfer.setData('tweet', JSON.stringify(tweet));
     e.dataTransfer.setData('fromTier', fromTier);
+    setIsDragging(true);
   };
 
   const onDrop = (e: React.DragEvent, toTier: string) => {
     e.preventDefault();
+    setIsDragging(false);
     if (!isEditing) return;
 
     const tweet = JSON.parse(e.dataTransfer.getData('tweet'));
@@ -355,6 +413,10 @@ export default function TierListApp() {
 
   const onDragOver = (e: React.DragEvent) => {
     if (isEditing) e.preventDefault();
+  };
+
+  const onDragEnd = () => {
+    setIsDragging(false);
   };
 
   const moveToDiscard = (tweet: Tweet, fromTier: string) => {
@@ -510,6 +572,7 @@ export default function TierListApp() {
                       key={tweet.id}
                       draggable={isEditing}
                       onDragStart={(e) => onDragStart(e, tweet, tier)}
+                      onDragEnd={onDragEnd}
                       className={`relative bg-[#1f2429] border border-[#2f3336] rounded-xl p-4 w-60 flex-shrink-0 ${
                         isEditing ? 'cursor-grab active:cursor-grabbing' : ''
                       }`}
