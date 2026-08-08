@@ -280,6 +280,18 @@ const initialTweets: Tweet[] = [
     avatarUrl: "https://pbs.twimg.com/profile_images/2015038970405572608/lbcRtHrS_400x400.jpg",
     tweetUrl: "https://x.com/RareAxies/status/2071297092136431711"
   },
+  // ===== NEW TWEET (added to E) =====
+  {
+    id: "2086139748607836477",
+    author: "RareAxies",
+    handle: "@RareAxies",
+    content: "West Midlands Police with yet another entry for the DEI category of the YooKay Police Madness Index 🏆",
+    likes: 25,
+    reposts: 8,
+    views: 6633,
+    avatarUrl: "https://pbs.twimg.com/profile_images/2015038970405572608/lbcRtHrS_400x400.jpg",
+    tweetUrl: "https://x.com/RareAxies/status/2086139748607836477"
+  },
 ];
 
 const tiers = ['S', 'A', 'B', 'C', 'D', 'E'];
@@ -312,7 +324,7 @@ export default function TierListApp() {
     B: [initialTweets[8], initialTweets[9], initialTweets[10], initialTweets[11], initialTweets[12]],
     C: [initialTweets[13], initialTweets[14], initialTweets[15]],
     D: [initialTweets[16], initialTweets[17], initialTweets[18], initialTweets[19]],
-    E: [initialTweets[20], initialTweets[21], initialTweets[22]],
+    E: [initialTweets[20], initialTweets[21], initialTweets[22], initialTweets[23]], // now includes the new tweet
     DISCARD: [],
   });
 
@@ -344,8 +356,8 @@ export default function TierListApp() {
       return;
     }
 
-    const EDGE = 100; // px from edge that triggers scroll
-    const SPEED = 12; // px per tick
+    const EDGE = 100;
+    const SPEED = 12;
 
     const handleDragOver = (e: DragEvent) => {
       const y = e.clientY;
@@ -357,12 +369,10 @@ export default function TierListApp() {
       }
 
       if (y < EDGE) {
-        // near top → scroll up
         scrollInterval.current = setInterval(() => {
           window.scrollBy(0, -SPEED);
         }, 16);
       } else if (y > h - EDGE) {
-        // near bottom → scroll down
         scrollInterval.current = setInterval(() => {
           window.scrollBy(0, SPEED);
         }, 16);
