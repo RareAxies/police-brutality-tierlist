@@ -245,6 +245,18 @@ const initialTweets: Tweet[] = [
     avatarUrl: "https://pbs.twimg.com/profile_images/2008318949448892417/v7L-39OP_400x400.jpg",
     tweetUrl: "https://x.com/RusGarbageHuman/status/2077145657932968156"
   },
+  // ===== NEW TWEET (added to D) =====
+  {
+    id: "2086203543623455106",
+    author: "Brit Lad X 🇬🇧",
+    handle: "@BritLadx",
+    content: "So this video is doing the rounds...\n\nFrom the reports going around, this bloke had bought a baseball bat. You can literally see it’s still in the plastic packaging. (THIS APPEARS TO BE MANCHESTER)\n\nOwning a baseball bat is perfectly legal.\n\nSo what happens?\n\nA copper sees him walking with it and decides that apparently this warrants an arrest. Then, unsurprisingly, the whole thing kicks off.\n\nAnd this is exactly why people are fucking sick of it.\n\nWould everyone get treated the same way in this situation? I seriously doubt it.",
+    likes: 160,
+    reposts: 33,
+    views: 387655,
+    avatarUrl: "https://pbs.twimg.com/profile_images/1904501834577780736/vP2Ual4q_400x400.jpg",
+    tweetUrl: "https://x.com/BritLadx/status/2086203543623455106"
+  },
 
   // ===== E - DEI hires =====
   {
@@ -280,7 +292,6 @@ const initialTweets: Tweet[] = [
     avatarUrl: "https://pbs.twimg.com/profile_images/2015038970405572608/lbcRtHrS_400x400.jpg",
     tweetUrl: "https://x.com/RareAxies/status/2071297092136431711"
   },
-  // ===== NEW TWEET (added to E) =====
   {
     id: "2086139748607836477",
     author: "RareAxies",
@@ -323,8 +334,8 @@ export default function TierListApp() {
     A: [initialTweets[3], initialTweets[4], initialTweets[5], initialTweets[6], initialTweets[7]],
     B: [initialTweets[8], initialTweets[9], initialTweets[10], initialTweets[11], initialTweets[12]],
     C: [initialTweets[13], initialTweets[14], initialTweets[15]],
-    D: [initialTweets[16], initialTweets[17], initialTweets[18], initialTweets[19]],
-    E: [initialTweets[20], initialTweets[21], initialTweets[22], initialTweets[23]], // now includes the new tweet
+    D: [initialTweets[16], initialTweets[17], initialTweets[18], initialTweets[19], initialTweets[20]], // now includes the new tweet
+    E: [initialTweets[21], initialTweets[22], initialTweets[23], initialTweets[24]],
     DISCARD: [],
   });
 
