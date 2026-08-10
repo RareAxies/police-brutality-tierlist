@@ -2,7 +2,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { toPng } from 'html-to-image';
-import { useSearchParams, useRouter } from 'next/navigation';
 
 interface Tweet {
   id: string;
@@ -246,6 +245,7 @@ const initialTweets: Tweet[] = [
     avatarUrl: "https://pbs.twimg.com/profile_images/2008318949448892417/v7L-39OP_400x400.jpg",
     tweetUrl: "https://x.com/RusGarbageHuman/status/2077145657932968156"
   },
+  // ===== NEW TWEET (added to D) =====
   {
     id: "2086203543623455106",
     author: "Brit Lad X 🇬🇧",
@@ -308,26 +308,6 @@ const initialTweets: Tweet[] = [
 const tiers = ['S', 'A', 'B', 'C', 'D', 'E'];
 const allTiers = [...tiers, 'DISCARD'];
 
-const defaultTier: Record<string, Tweet[]> = {
-  S: [initialTweets[0], initialTweets[1], initialTweets[2]],
-  A: [initialTweets[3], initialTweets[4], initialTweets[5], initialTweets[6], initialTweets[7]],
-  B: [initialTweets[8], initialTweets[9], initialTweets[10], initialTweets[11], initialTweets[12]],
-  C: [initialTweets[13], initialTweets[14], initialTweets[15]],
-  D: [initialTweets[16], initialTweets[17], initialTweets[18], initialTweets[19], initialTweets[20]],
-  E: [initialTweets[21], initialTweets[22], initialTweets[23], initialTweets[24]],
-  DISCARD: [],
-};
-
-const defaultTitles: Record<string, string> = {
-  S: 'Anti-white Racism',
-  A: 'Violent Policing',
-  B: 'Thought Police',
-  C: 'Failed Arrest',
-  D: 'Two Tier Policing',
-  E: 'DEI hires',
-  DISCARD: 'Discard Pile',
-};
-
 const tierStyles: Record<string, string> = {
   S: 'bg-red-950/40 border-red-600',
   A: 'bg-orange-950/40 border-orange-500',
@@ -348,66 +328,36 @@ const tierColors: Record<string, string> = {
   DISCARD: '#6b7280',
 };
 
-function encodeState(tierLists: Record<string, Tweet[]>, tierTitles: Record<string, string>) {
-  const payload = {
-    t: Object.fromEntries(
-      Object.entries(tierLists).map(([k, tweets]) => [k, tweets.map(t => t.id)])
-    ),
-    titles: tierTitles,
-  };
-  return btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
-}
-
-function decodeState(encoded: string): { tierLists: Record<string, Tweet[]>; tierTitles: Record<string, string> } | null {
-  try {
-    const payload = JSON.parse(decodeURIComponent(escape(atob(encoded))));
-    const newLists: Record<string, Tweet[]> = { DISCARD: [] };
-
-    for (const tier of tiers) {
-      const ids: string[] = payload.t[tier] || [];
-      newLists[tier] = ids
-        .map(id => initialTweets.find(t => t.id === id))
-        .filter(Boolean) as Tweet[];
-    }
-
-    return {
-      tierLists: newLists,
-      tierTitles: { ...defaultTitles, ...payload.titles },
-    };
-  } catch {
-    return null;
-  }
-}
-
 export default function TierListApp() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
+  const [tierLists, setTierLists] = useState<Record<string, Tweet[]>>({
+    S: [initialTweets[0], initialTweets[1], initialTweets[2]],
+    A: [initialTweets[3], initialTweets[4], initialTweets[5], initialTweets[6], initialTweets[7]],
+    B: [initialTweets[8], initialTweets[9], initialTweets[10], initialTweets[11], initialTweets[12]],
+    C: [initialTweets[13], initialTweets[14], initialTweets[15]],
+    D: [initialTweets[16], initialTweets[17], initialTweets[18], initialTweets[19], initialTweets[20]], // now includes the new tweet
+    E: [initialTweets[21], initialTweets[22], initialTweets[23], initialTweets[24]],
+    DISCARD: [],
+  });
 
-  const [tierLists, setTierLists] = useState<Record<string, Tweet[]>>(defaultTier);
-  const [tierTitles, setTierTitles] = useState<Record<string, string>>(defaultTitles);
+  const [tierTitles, setTierTitles] = useState<Record<string, string>>({
+    S: 'Anti-white Racism',
+    A: 'Violent Policing',
+    B: 'Thought Police',
+    C: 'Failed Arrest',
+    D: 'Two Tier Policing',
+    E: 'DEI hires',
+    DISCARD: 'Discard Pile',
+  });
+
   const [isEditing, setIsEditing] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [editingTier, setEditingTier] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [isShared, setIsShared] = useState(false);
-  const [shareMessage, setShareMessage] = useState<string | null>(null);
-
   const scrollRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const cleanRef = useRef<HTMLDivElement>(null);
   const scrollInterval = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  useEffect(() => {
-    const encoded = searchParams.get('s');
-    if (encoded) {
-      const decoded = decodeState(encoded);
-      if (decoded) {
-        setTierLists(decoded.tierLists);
-        setTierTitles(decoded.tierTitles);
-        setIsShared(true);
-      }
-    }
-  }, [searchParams]);
-
+  // Auto-scroll while dragging near top/bottom edges
   useEffect(() => {
     if (!isDragging) {
       if (scrollInterval.current) {
@@ -430,9 +380,13 @@ export default function TierListApp() {
       }
 
       if (y < EDGE) {
-        scrollInterval.current = setInterval(() => window.scrollBy(0, -SPEED), 16);
+        scrollInterval.current = setInterval(() => {
+          window.scrollBy(0, -SPEED);
+        }, 16);
       } else if (y > h - EDGE) {
-        scrollInterval.current = setInterval(() => window.scrollBy(0, SPEED), 16);
+        scrollInterval.current = setInterval(() => {
+          window.scrollBy(0, SPEED);
+        }, 16);
       }
     };
 
@@ -482,7 +436,9 @@ export default function TierListApp() {
     if (isEditing) e.preventDefault();
   };
 
-  const onDragEnd = () => setIsDragging(false);
+  const onDragEnd = () => {
+    setIsDragging(false);
+  };
 
   const moveToDiscard = (tweet: Tweet, fromTier: string) => {
     if (!isEditing) return;
@@ -497,7 +453,10 @@ export default function TierListApp() {
   const scroll = (tier: string, direction: 'left' | 'right') => {
     const container = scrollRefs.current[tier];
     if (container) {
-      container.scrollBy({ left: direction === 'right' ? 280 : -280, behavior: 'smooth' });
+      container.scrollBy({
+        left: direction === 'right' ? 280 : -280,
+        behavior: 'smooth',
+      });
     }
   };
 
@@ -505,27 +464,11 @@ export default function TierListApp() {
     setTierTitles(prev => ({ ...prev, [tier]: value }));
   };
 
-  const handleToggleEdit = () => {
-    setIsEditing(prev => !prev);
-    setEditingTier(null);
-  };
-
-  const handleViewOriginal = () => {
-    setTierLists(defaultTier);
-    setTierTitles(defaultTitles);
-    setIsEditing(false);
-    setIsShared(false);
-    setEditingTier(null);
-    router.push('/');
-  };
-
-  const handleShareImage = async () => {
-    if (isEditing) {
-      setIsEditing(false);
-      setEditingTier(null);
-    }
-
+  const handleDownload = async () => {
     if (!cleanRef.current) return;
+
+    setIsEditing(false);
+    setEditingTier(null);
     setIsDownloading(true);
 
     try {
@@ -547,44 +490,6 @@ export default function TierListApp() {
     }
   };
 
-  // Helper: check if current state is different from the original default
-  const hasChanges = () => {
-    // Compare titles
-    for (const tier of tiers) {
-      if (tierTitles[tier] !== defaultTitles[tier]) return true;
-    }
-    // Compare tweet IDs in each tier
-    for (const tier of tiers) {
-      const currentIds = tierLists[tier].map(t => t.id).join(',');
-      const defaultIds = defaultTier[tier].map(t => t.id).join(',');
-      if (currentIds !== defaultIds) return true;
-    }
-    // Also check if anything is in the discard pile
-    if (tierLists['DISCARD'].length > 0) return true;
-    return false;
-  };
-
-  const handleShareLink = async () => {
-    if (isEditing) {
-      setIsEditing(false);
-      setEditingTier(null);
-    }
-
-    // If user has made any changes → long link
-    // If still the original default → short bit.ly link
-    const url = hasChanges()
-      ? `${window.location.origin}/?s=${encodeState(tierLists, tierTitles)}`
-      : 'https://bit.ly/UK-Police-On-X';
-
-    try {
-      await navigator.clipboard.writeText(url);
-      setShareMessage('Link copied to clipboard!');
-      setTimeout(() => setShareMessage(null), 3000);
-    } catch {
-      prompt('Copy this link:', url);
-    }
-  };
-
   const visibleTiers = isEditing ? allTiers : tiers;
 
   return (
@@ -592,57 +497,30 @@ export default function TierListApp() {
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">
-          <h1 className="text-4xl md:text-5xl font-bold mb-3">🇬🇧 UK Police on X 🇬🇧</h1>
-          <p className="text-gray-400 mb-6">👮 YooKay Police doing a madness 👮</p>
+          <h1 className="text-4xl md:text-5xl font-bold mb-3">UK Police on X</h1>
+          <p className="text-gray-400 mb-6">(YooKay Police doing a madness)</p>
 
-          <div className="flex justify-center gap-3 flex-wrap">
-            {/* Edit / Finish Editing → A orange */}
+          <div className="flex justify-center gap-4 flex-wrap">
             <button
-              onClick={handleToggleEdit}
-              className="px-5 py-3 rounded-xl font-semibold text-white transition-all"
-              style={{ backgroundColor: tierColors.A }}
+              onClick={() => {
+                setIsEditing(!isEditing);
+                setEditingTier(null);
+              }}
+              className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+                isEditing ? 'bg-green-600 hover:bg-green-500' : 'bg-blue-600 hover:bg-blue-500'
+              }`}
             >
-              {isEditing ? 'Finish editing ✅' : 'Edit this list 🔧'}
+              {isEditing ? 'Finish Editing' : 'Re-arrange this Tier List'}
             </button>
 
-            {/* Share image → B yellow */}
             <button
-              onClick={handleShareImage}
+              onClick={handleDownload}
               disabled={isDownloading}
-              className="px-5 py-3 rounded-xl font-semibold text-black transition-all disabled:opacity-50"
-              style={{ backgroundColor: tierColors.B }}
+              className="px-6 py-3 rounded-xl font-semibold bg-gray-700 hover:bg-gray-600 transition-all disabled:opacity-50"
             >
-              {isDownloading
-                ? 'Generating…'
-                : isEditing
-                ? 'Finish and Share 📸'
-                : 'Share 📸'}
+              {isDownloading ? 'Generating…' : 'Finish & Download Image'}
             </button>
-
-            {/* Share link → C green */}
-            <button
-              onClick={handleShareLink}
-              className="px-5 py-3 rounded-xl font-semibold text-white transition-all"
-              style={{ backgroundColor: tierColors.C }}
-            >
-              {isEditing ? 'Finish and Share 🔗' : 'Share 🔗'}
-            </button>
-
-            {/* View original → D blue (only on shared links) */}
-            {isShared && (
-              <button
-                onClick={handleViewOriginal}
-                className="px-5 py-3 rounded-xl font-semibold text-white transition-all"
-                style={{ backgroundColor: tierColors.D }}
-              >
-                View original
-              </button>
-            )}
           </div>
-
-          {shareMessage && (
-            <p className="mt-4 text-sm text-green-400 font-medium">{shareMessage}</p>
-          )}
 
           {isEditing && (
             <p className="mt-4 text-sm text-yellow-400">
@@ -796,7 +674,7 @@ export default function TierListApp() {
           ))}
         </div>
 
-        {/* Footer */}
+        {/* Live site footer */}
         <div className="text-center mt-12 pb-6 text-gray-400 text-sm">
           Questions —{' '}
           <a
@@ -810,12 +688,12 @@ export default function TierListApp() {
         </div>
       </div>
 
-      {/* Clean download version */}
+      {/* ========== CLEAN VERSION FOR DOWNLOAD ========== */}
       <div className="fixed -left-[9999px] top-0">
         <div ref={cleanRef} className="bg-black p-8 w-[900px]">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-white">🇬🇧 UK Police on X 🇬🇧</h1>
-            <p className="text-gray-400 mt-1">👮 YooKay Police doing a madness 👮</p>
+            <h1 className="text-4xl font-bold text-white">UK Police on X</h1>
+            <p className="text-gray-400 mt-1">(YooKay Police doing a madness)</p>
           </div>
 
           <div className="space-y-5">
@@ -823,12 +701,15 @@ export default function TierListApp() {
               <div key={tier} className="flex items-start gap-3">
                 <div
                   className="w-24 h-24 flex-shrink-0 rounded-xl flex flex-col items-center justify-center text-center px-1"
-                  style={{
-                    backgroundColor: tierColors[tier] + '33',
-                    border: `2px solid ${tierColors[tier]}`,
+                  style={{ 
+                    backgroundColor: tierColors[tier] + '33', 
+                    border: `2px solid ${tierColors[tier]}` 
                   }}
                 >
-                  <div className="text-3xl font-black leading-none" style={{ color: tierColors[tier] }}>
+                  <div 
+                    className="text-3xl font-black leading-none"
+                    style={{ color: tierColors[tier] }}
+                  >
                     {tier}
                   </div>
                   <div className="text-[10px] font-medium text-white/90 mt-1 leading-tight break-words w-full px-0.5">
