@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, Suspense } from 'react';
 import { toPng } from 'html-to-image';
 import { useSearchParams, useRouter } from 'next/navigation';
 
@@ -379,7 +379,7 @@ function decodeState(encoded: string): { tierLists: Record<string, Tweet[]>; tie
   }
 }
 
-export default function TierListApp() {
+function TierListApp() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -547,19 +547,15 @@ export default function TierListApp() {
     }
   };
 
-  // Helper: check if current state is different from the original default
   const hasChanges = () => {
-    // Compare titles
     for (const tier of tiers) {
       if (tierTitles[tier] !== defaultTitles[tier]) return true;
     }
-    // Compare tweet IDs in each tier
     for (const tier of tiers) {
       const currentIds = tierLists[tier].map(t => t.id).join(',');
       const defaultIds = defaultTier[tier].map(t => t.id).join(',');
       if (currentIds !== defaultIds) return true;
     }
-    // Also check if anything is in the discard pile
     if (tierLists['DISCARD'].length > 0) return true;
     return false;
   };
@@ -570,8 +566,6 @@ export default function TierListApp() {
       setEditingTier(null);
     }
 
-    // If user has made any changes → long link
-    // If still the original default → short bit.ly link
     const url = hasChanges()
       ? `${window.location.origin}/?s=${encodeState(tierLists, tierTitles)}`
       : 'https://bit.ly/UK-Police-On-X';
@@ -590,13 +584,11 @@ export default function TierListApp() {
   return (
     <div className="min-h-screen bg-black text-white p-6 md:p-10 overflow-x-hidden">
       <div className="max-w-5xl mx-auto">
-        {/* Header */}
         <div className="text-center mb-10">
           <h1 className="text-4xl md:text-5xl font-bold mb-3">🇬🇧 UK Police on X 🇬🇧</h1>
           <p className="text-gray-400 mb-6">👮 YooKay Police doing a madness 👮</p>
 
           <div className="flex justify-center gap-3 flex-wrap">
-            {/* Edit / Finish Editing → A orange */}
             <button
               onClick={handleToggleEdit}
               className="px-5 py-3 rounded-xl font-semibold text-white transition-all"
@@ -605,7 +597,6 @@ export default function TierListApp() {
               {isEditing ? 'Finish editing ✅' : 'Edit this list 🔧'}
             </button>
 
-            {/* Share image → B yellow */}
             <button
               onClick={handleShareImage}
               disabled={isDownloading}
@@ -619,7 +610,6 @@ export default function TierListApp() {
                 : 'Share 📸'}
             </button>
 
-            {/* Share link → C green */}
             <button
               onClick={handleShareLink}
               className="px-5 py-3 rounded-xl font-semibold text-white transition-all"
@@ -628,7 +618,6 @@ export default function TierListApp() {
               {isEditing ? 'Finish and Share 🔗' : 'Share 🔗'}
             </button>
 
-            {/* View original → D blue (only on shared links) */}
             {isShared && (
               <button
                 onClick={handleViewOriginal}
@@ -651,7 +640,6 @@ export default function TierListApp() {
           )}
         </div>
 
-        {/* Tiers */}
         <div className="space-y-5">
           {visibleTiers.map(tier => (
             <div
@@ -796,7 +784,6 @@ export default function TierListApp() {
           ))}
         </div>
 
-        {/* Footer */}
         <div className="text-center mt-12 pb-6 text-gray-400 text-sm">
           Questions —{' '}
           <a
@@ -859,5 +846,18 @@ export default function TierListApp() {
         </div>
       </div>
     </div>
+  );
+}
+
+// This is the key fix – wrap the component that uses useSearchParams in Suspense
+export default function Page() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        Loading…
+      </div>
+    }>
+      <TierListApp />
+    </Suspense>
   );
 }
